@@ -1,28 +1,30 @@
-import Class.module as Class
-from Others.style import cls, clr
+import Points
+from Others.style import cls, clr, option
 
 ACTION = {
-    'c-l': Class.LookupAction,
-    'c-a': Class.AppendAction,
-    'c-u': Class.UpdateAction,
-    'c-r': Class.RemoveAction,
-    'c-s': Class.SearchAction,
+    'p-l': Points.LookupAction,
+    'p-u': Points.UpdateAction,
+    'p-r': Points.RemoveAction,
+    'p-s': Points.SearchAction,
 }
 
-def MenuAction():
-    fn = ''
-    cls()
-    print('1. Tra cứu\t2. Thêm mới\t3. Chỉnh sửa\t4. Xóa bỏ\t5. Tìm kiếm\t0. Trở về')
-    while True:
-        n = int(input('Chọn chức năng: \033[35m'))
-        print('', end='\033[0m')
-        if not n: return 'exit' # 'm-m'
-        elif 0 < n < 6:
-            fn = list(ACTION.keys())[n-1]
-            break
-        else: print(clr('[x] Chỉ nhập số ứng với các chức năng trên. Hãy thử lại!', 'fail'))
-
-    while fn != 'c-m':
-        fn = ACTION[fn]()
+def MenuAction(fn: list):
+    if not fn:
+        fn = ['p-m', None]
+        cls()
+        options = { '1': 'Tra cứu', '2': 'Chỉnh sửa', '3': 'Xóa bỏ', '4': 'Tìm kiếm' }
+        pp = list(map(lambda k: '    ' + option(k, options[k]), options))
+        print(' 📋 Quản lí Thông tin điểm')
+        print('   '.join(pp + ['    ' + option('ctrl + c', 'Trở về', 43)]))
+        try:
+            while True:
+                n = input('Chọn chức năng cho Thông tin điểm: ')
+                if len(n) == 1 and '0' < n < '6':
+                    fn[0] = list(ACTION.keys())[int(n)-1]
+                    break
+                else: print(clr('[x] Chỉ nhập số ứng với các chức năng trên\n    Hãy thử lại!', 'fail'))
+        except KeyboardInterrupt: return ['m-m']
+    while fn[0] != 'p-m' and fn[0] in ACTION:
+        fn = ACTION[fn[0]](*fn[1:])
     
     return fn

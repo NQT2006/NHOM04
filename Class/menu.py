@@ -1,4 +1,4 @@
-import Class.module as Class
+import Class
 from Others.style import cls, clr, option
 
 ACTION = {
@@ -18,7 +18,7 @@ def MenuAction(fn: list):
             '4': 'Xóa bỏ', '5': 'Tìm kiếm'
         }
         pp = list(map(lambda k: '    ' + option(k, options[k]), options))
-        print('    Quản lí Thông tin lớp học')
+        print(' 💼 Quản lí Thông tin lớp học')
         print('   '.join(pp + ['    ' + option('ctrl + c', 'Trở về', 43)]))
         try:
             while True:
@@ -28,8 +28,8 @@ def MenuAction(fn: list):
                     break
                 else: print(clr('[x] Chỉ nhập số ứng với các chức năng trên. Hãy thử lại!', 'fail'))
         except KeyboardInterrupt:
-            return ['exit']
-    while fn[0] != 'c-m':
+            return ['m-m']
+    while fn[0] != 'c-m' and fn[0] in ACTION:
         fn = ACTION[fn[0]](*fn[1:])
     
     return fn

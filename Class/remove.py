@@ -1,7 +1,6 @@
-from Class.document import Read, Write, ClassOptions
+from Class.document import Read, Write, GetOptions
 from Students.document import Read as ReadStudents
-from Others.style import clr, cls, bold, option
-import Others.class_input_test as KiemTra
+from Others.style import clr, cls, bold
 
 MODE = {
     'exit': ['c-m', None],
@@ -13,13 +12,18 @@ MODE = {
 
 def remove(data: list, ucl: list):
     dsml = [l[0] for l in data]
-    maLop = ClassOptions(data, 0, True, 'những lớp cần xóa (Cách nhau bằng "dấu cách"): ', 1, '    ')
-    if maLop in ucl: raise Exception('Không thể xóa lớp đang có học sinh')
-    index = dsml.index(maLop)
-    newData = data[:index] + data[index+1:]
-    Write(newData)
-    print(clr(f'[-] Xóa thành công lớp {maLop}\n', 'green'))
-    return newData
+    maLop = GetOptions(data, 0, True, 'những lớp cần xóa (Cách nhau bằng "dấu cách"): ', 1, '    ')
+    for lop in maLop.copy():
+        if lop not in maLop:
+            maLop.remove(lop)
+            continue
+        if lop in ucl: raise Exception('Không thể xóa lớp đang có học sinh')
+        index = dsml.index(lop)
+        data = data[:index] + data[index+1:]
+    if not len(maLop): raise Exception('Không tìm thấy lớp nào')
+    Write(data)
+    print(clr(f'[-] Xóa thành công lớp {', '.join(maLop)}\n', 'success'))
+    return data
 
 def RemoveAction(maLop):
     title = bold('[4] Xóa bỏ thông tin lớp')
@@ -32,7 +36,7 @@ def RemoveAction(maLop):
         except KeyboardInterrupt:
             return MODE['exit']
         except Exception as e:
-            print(clr('[!] Xóa không thành công: ' + str(e) + '\n', 'fail'))
+            print(clr(' \u2716   Xóa không thành công: ' + str(e) + '\n', 'fail'))
 
 #
 '''def RemoveAction(maLop):
@@ -56,7 +60,7 @@ def RemoveAction(maLop):
             index = dsml.index(maLop)
             newData = data[:index] + data[index+1:]
             Write(newData)
-            print(clr(f'[-] Xóa thành công lớp {maLop}\n', 'green'))
+            print(clr(f'[-] Xóa thành công lớp {maLop}\n', 'success'))
         except KeyboardInterrupt:
             return MODE['exit']
         except Exception as e:

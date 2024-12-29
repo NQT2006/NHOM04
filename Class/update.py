@@ -1,14 +1,8 @@
-from Class.document import Read, Write, ClassOptions
-from Others.style import clr, cls, header
+from Class.document import Read, Write, GetOptions
+from Others.style import clr, cls, header, option
 import Others.class_input_test as KiemTra
 
-MODE = {
-    'exit': ['c-m', None],
-    'f1':   ['c-l', None],
-    'f2':   ['c-a', None],
-    'f4':   ['c-r', None],
-    'f5':   ['c-s', None]
-}
+EXIT = ['c-m', None]
 
 def update(data, index, title):
     f = data[index]
@@ -16,7 +10,8 @@ def update(data, index, title):
     pos = 0
     Test = [KiemTra.MaLop, KiemTra.TenLop, KiemTra.TongSoBan]
     while True:
-        cls(title + '\n[!]\033[33mChú ý: Để bỏ qua các trường không muốn đổi, bấm Enter↵\033[0m')
+        cls(title, '\n[!]\033[33mChú ý: Để bỏ qua các trường không muốn đổi, bấm Enter↵\033[0m',
+            '\n', option('ctrl + c', 'Trở về Menu', 43))
         print('\t' + header(('\t').join(data[0]), 1))
         if len(f[1]) < 20: f[1] += ' '*(20 - len(f[1]))
         print('Từ:\t ' + '\t '.join(f))
@@ -38,29 +33,29 @@ def UpdateAction(maLop):
     while True:
         try:
             if not maLop:
-                maLop = ClassOptions(data, 0, True, '1 lớp cần chỉnh sửa', 1, '    ')
+                maLop = GetOptions(data, 0, True, '1 lớp cần chỉnh sửa', 1, '    ')
             index = dsml.index(maLop)
             title = '\033[1m[3]\033[0m Chỉnh sửa thông tin lớp: \033[95m' + data[index][0] + '\033[0m'
             while True:
                 newDoc = update(data, index, title)
                 if newDoc == data[index]:
-                    ext = input('[?] Bạn không chỉnh sửa gì. Muốn thoát chứ ? Chọn y-có hoặc n-không: ')
-                    if ext.lower() == 'y':
+                    ext = input('[?] Bạn không chỉnh sửa gì. Muốn thoát chứ ? Enter↵(thoát) hoặc n(sửa lại): ')
+                    if not ext:
                         cls(title)
-                        print(clr('[x] Cập nhật không thành công: Hủy chỉnh sửa.\nHãy thử lại!', 'fail'))
+                        print(clr(' \u2716  Cập nhật không thành công: Hủy chỉnh sửa.\nHãy thử lại!', 'fail'))
                         break
                     else: continue
                 else:
-                    ext = input('[?] Bạn muốn lưu lại chỉnh sửa này chứ ? Chọn y-có hoặc n-không: ')
-                    if ext.lower() == 'y':
-                        data = data[:index] + [newDoc] + data[index+1:]
+                    ext = input('[?] Bạn muốn lưu lại chỉnh sửa này chứ ? Chọn Enter↵(lưu) hoặc n(sửa lại): ')
+                    if not ext:
+                        data[index] = newDoc
                         Write(data)
                         cls(title)
-                        print(clr(' \u2795 Cập nhật thành công.\n', 'green'))
+                        print(clr(' \u2795  Cập nhật thành công.\n', 'success'))
                         break
                     else: continue
             maLop = ''
         except KeyboardInterrupt:
-            return MODE['exit']
+            return EXIT
         except Exception as e:
-            print(clr(' ❌ Cập nhật không thành công: ' + str(e) + '.\nHãy thử lại!', 'fail'))
+            print(clr(' \u2716  Cập nhật không thành công: ' + str(e) + '.\nHãy thử lại!', 'fail'))

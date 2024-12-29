@@ -1,98 +1,126 @@
 from Students.document import Read
-from Others.style import cls, clr, option, bold, header
+from Class.document import ClassIdFilter
+from Others.style import cls, clr, option, bold, header, query2, query1
 from Others.sort import LimitSort
+# from Class.lookup import ClassIdFilter
 
-MODE = {
-    'exit': ['s-m', None],
-    'f2':   ['s-a', None],
-    'f3':   ['s-u', None],
-    'f4':   ['s-r', None],
-    'f5':   ['s-s', None]
+EXIT = ['s-m', None]
+F5 = ['s-s', None]
+
+FIELDS = {
+    0: ['Mã học sinh', '\t', 12],
+    1: ['Họ đệm', '\t', 20],
+    2: ['Tên', '\t', 12],
+    3: ['Tuổi', '\t', 4],
+    4: ['Ngày sinh', '\t', 12],
+    5: ['SĐT', '  \t', 12],
+    6: ['Mã lớp', '\t', 11]
 }
+SELECTED_FIELDS = [0, 1, 2, 4, 3, 5, 6]
 
 def lookup(data: list):
     index = 1
-    print('\t' + header(('\t').join(data[0]), 1))
+    output = '\t' + header('\t'.join([data[0][f] for f in SELECTED_FIELDS]), 1)
     for doc in data[1:]:
-        doc[1] = ' '*(21 - len(doc[1])) + doc[1]
-        doc[2] = ' '*(13 - len(doc[2])) + doc[2]
-        doc[3] = ' ' + doc[3]
-        doc[4] = '  ' + doc[4]
-        if (index%2): print(f'     \033[1m{index}\033[0m\t  ' + ('\t ').join(doc))
-        else: print(f'     \033[1;30;37m{index}\033[0m\t  \033[30;37m{('\t ').join(doc)}\033[0m')
+        doc = list(map(lambda fi: ' '*(FIELDS[fi][2] - len(doc[fi])) + doc[fi], SELECTED_FIELDS))
+        if (index%2): output += f'\n     \033[1m{index}\033[0m\t' + ('\t').join(doc) + '\033[0m'
+        else: output += f'\n     \033[1;30;37m{index}\033[0m\t\033[30;37m{('\t').join(doc)}\033[0m'
         index += 1
+    return output
 
 def StudentsSort(data: list, limit: bool, ft: dict):
     dataHead = data[0]
     data = data[1:]
-    od = {
-        '1': 'Mã học sinh',
-        '2': 'Họ đệm',
-        '3': 'Tên',
-        '4': 'Tuổi',
-        '5': 'Ngày sinh',
-        '6': 'Số điện thoại',
-        '7': 'Mã lớp'
-    }
-    ol = list(map(lambda k: '\t' + option(k, od[k]), od)) + [option('Enter↵', 'Mặc định')]
-    for i in range(round(len(od) / 3 + .4)):
-        print('\t'.join(ol[3*i:3*(i+1)]))
+    fields = SELECTED_FIELDS
+    ol = []
+    for i in range(len(fields)):
+        fi = fields[i]
+        ol.append(option(str(i+1), FIELDS[fi][0]) + FIELDS[fi][1])
+    ol.append(option('Enter↵', 'Mặc định', 46))
+    ol.append(option('ctrl + c', 'Thoát', 43))
+    for i in range(round(len(ol) / 5 + .4)):
+        print('      ' + '\t'.join(ol[5*i:5*(i+1)]))
     sort = ''
     while True:
-        note = '[!] Cú pháp: "<Tùy chọn> <Chiều: +(Tăng) hoặc -(Giảm)>"'
+        note = '  [!] Cú pháp: "<Tùy chọn> <Chiều: +(Tăng) hoặc -(Giảm)>"'
         if limit: note += ' <Giới hạn: Số>'
         print(clr(note, 'note'))
-        sort = input(f'[?] Sắp xếp lớp theo trường (Mặc định: \033[35m{'1 + 10' if limit else '1 +'}\033[0m): ')
+        sort = query1(f'cú pháp sắp xếp (Mặc định: \033[35m{'1 + 10' if limit else '1 +'}\033[0m)', 2)
         if not sort:
             sort = ['1', '+', '10'] if limit else ['1', '+']
             break
         sort = sort.split(' ')
         if ((len(sort) == 2 and not limit) or (len(sort) == 3 and limit)
-            ) and (sort[0].strip() in od and sort[1].strip() in ['+', '-']):
+            ) and ((0 < int(sort[0]) <= len(fields)) and sort[1].strip() in ['+', '-']):
             break
-        else:
-            print(clr(' ❌ Lọc không thành công: Cú pháp không hợp lệ.\nHãy chọn lại!', 'fail'))
+        else: print(clr(' ❌ Lọc không thành công: Cú pháp không hợp lệ.\nHãy chọn lại!', 'fail'))
     ft['sort'] = sort
-    data = LimitSort(data, int(sort[2]) if limit else 0, int(sort[1]+'1'), lambda d: d[int(sort[0]) - 1])
+    data = LimitSort(data, int(sort[2]) if limit else 0, False if sort[1] == '+' else True, lambda d: d[int(sort[0])-1])
     data = [dataHead] + data
-    ft['histoty'].append(f'    ✔️  Sắp xếp lớp theo trường: {od[sort[0]]}, {'Tăng dần' if sort[1] == '+' else 'Giảm dần'}')
-    if limit: ft['histoty'][-1] += ', Giới hạn ' + sort[2]
-    else: ft['histoty'][-1] += ', Tất cả'
+    ft['histoty'].append('    ✔️  Sắp xếp lớp theo trường: ' + FIELDS[fields[int(sort[0])-1]][0] )
+    ft['histoty'][-1] += ', ' + ('Tăng dần' if sort[1] == '+' else 'Giảm dần')
+    if limit: ft['histoty'][-1] += ' (Giới hạn ' + sort[2] + ')'
+    else: ft['histoty'][-1] += ' (Tất cả)'
     return [data, ft]
 
+def AlterColumn(*a):
+    raise Exception('Tính năng đang phát triển')
 
-def LookupAction(data: list = None):
+def LookupAction(data: list):
     title = bold('[1] Tra cứu thông tin lớp')
-    data = Read()
-    cdata = data.copy()
-    ft = {'maLop': [], 'histoty': [' 📝 Lịch sử bộ lọc:'], 'sort': ''}
-    # data.sort(key= lambda l: l[0])
+    DATA = data
+    if not data:
+        DATA = Read()
+
+    data = DATA.copy()
+    output0 = lookup(data)
+    cls(title, '\n', output0)
+    output1 = ''
+    ft = { 'class': [], 'histoty': [' 📝 Lịch sử bộ lọc:'] }
+    # DATA.sort(key= lambda l: l[0])
     FUNCTION = {
-        '1': [None, (0, 'Lọc theo mã lớp')],
-        '2': [StudentsSort, (False, 'Sắp xếp tất cả theo trường')],
-        '3': [StudentsSort, (True, 'Sắp xếp giới hạn theo trường')]
+        '1': [AlterColumn, (None, 'Tùy chỉnh cột dữ liệu')],
+        '2': [ClassIdFilter, (6, 'Lọc theo mã lớp')],
+        '3': [StudentsSort, (False, 'Sắp xếp tất cả')],
+        '4': [StudentsSort, (True, 'Sắp xếp giới hạn')]
     }
     ol = [
         option('1', FUNCTION['1'][1][1]),
-        option('2', FUNCTION['2'][1][1]),
-        option('3', FUNCTION['3'][1][1])
+        option('2', FUNCTION['2'][1][1]) + '\t',
+        option('3', FUNCTION['3'][1][1]),
+        option('4', FUNCTION['4'][1][1]),
+        option('5', 'Chuyển sang Tìm kiếm')
     ]
     while True:
-        cls(title + (('\n'.join(ft['histoty']) + '\n') if len(ft['histoty']) > 1 else ''))
-        lookup(cdata)
+        if not output0:
+            output0 = lookup(data)
+            cls(title, '\n', output0)
+        print('\n    ' + '\t'.join(ol[:3]))   
+        print('    ' + '\t'.join(
+            ol[3:] + [option('ctrl + c', 'Xóa bộ lọc' if len(ft['histoty']) > 1 else 'Trở về Menu', 43)]
+        ))
         try:
-            print('\n    ' + '   '.join(
-                ol + [option('ctrl + c', 'Xóa bộ lọc' if len(ft['histoty']) > 1 else 'Trở về Menu', 43)]
-            ))
-            fn = input('[?] Chọn chức năng: ')
-            if fn in MODE: return MODE[fn]
+            fn = query2('1 chức năng', 1)
+            if fn == '5': return F5
             elif fn in FUNCTION:
-                print(f'[1.{fn}] {FUNCTION[fn][1][1]}')
-                cdata, ft = FUNCTION[fn][0](cdata, FUNCTION[fn][1][0], ft)
-            else: print(clr(' ❌ Chỉ nhập số ứng với các chức năng trên.\n    Hãy thử lại!', 'fail'))
+                if len(ft['histoty']) == 1: cls(title, '\n', output0)
+                else: cls(title, '\n', '\n'.join(ft['histoty']), '\n', output1)
+                print(bold(f'[1.{fn}] {FUNCTION[fn][1][1]}'))
+                try:
+                    data, ft = FUNCTION[fn][0](data, FUNCTION[fn][1][0], ft)
+                    output1 = lookup(data)
+                except KeyboardInterrupt: continue
+                finally:
+                    if len(ft['histoty']) == 1: cls(title, '\n', output0)
+                    else: cls(title, '\n', '\n'.join(ft['histoty']), '\n\n', output1)
+            else: print(clr(' \u2716  Chỉ nhập số ứng với các chức năng trên.\n    Hãy thử lại!', 'fail'))
         except KeyboardInterrupt:
             if len(ft['histoty']) > 1:
-                cdata = data.copy()
-                ft = {'maLop': [], 'histoty': [' 📝 Lịch sử bộ lọc:'], 'sort': ''}
+                cls(title, '\n', output0)
+                data = DATA.copy()
+                ft = { 'class': [], 'histoty': [' 📝 Lịch sử bộ lọc:'] }
+                output1 = ''
                 continue
-            return MODE['exit']
+            return EXIT
+        except Exception as e:
+            print(clr(' \u2716  Lọc không thành công: ' + str(e), 'fail'))

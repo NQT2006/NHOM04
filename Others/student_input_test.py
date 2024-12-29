@@ -10,10 +10,22 @@ def MaHocSinh(x):
 def HoTen(x):
     if not x: raise Exception('Chưa nhập họ và tên')
     x = strip(x)
-    if len(x) > 50: raise Exception('Họ và tên phải ít hơn 50 kí tự')
+    if len(x) > 70: raise Exception('Họ và tên phải ít hơn 70 kí tự')
     x = x.split(' ')
     if (len(x) == 1): raise Exception('Phải nhập đầy đủ học và tên')
     return [' '.join(x[:-1]), x[-1]]
+
+def HoDem(x):
+    if not x: raise Exception('Chưa nhập họ đệm')
+    x = strip(x)
+    if len(x) > 50: raise Exception('Họ đệm phải ít hơn 50 kí tự')
+    return x
+
+def Ten(x):
+    if not x: raise Exception('Chưa nhập tên')
+    x = strip(x)
+    if len(x) > 50: raise Exception('Tên phải ít hơn 20 kí tự')
+    return x
 
 def Tuoi(x):
     if not x: raise Exception('Chưa nhập tuổi')
@@ -26,7 +38,7 @@ def NgaySinh(x):
     x = strip(x)
     try: datetime(*map(lambda x: int(x), x.split('-')))
     except: raise Exception('Ngày sinh không hợp lệ')
-    return list(map(lambda x: ('0'+x) if len(x) == 1 else x , x.split('-')))
+    return '-'.join(list(map(lambda x: ('0'+x) if len(x) == 1 else x , x.split('-'))))
 
 def SoDienThoai(x):
     if not x: raise Exception('Chưa nhập số điện thoại')
@@ -43,7 +55,8 @@ def MaLop(x):
 
 def TinhTuoi(nam: str|int, thang: int, ngay: int):
     NAM = datetime.now().year
-    if NAM - 10 < nam: raise Exception('Năm sinh quá nhỏ')
+    if NAM - 10 < int(nam): raise Exception('Tuổi quá nhỏ')
+    elif NAM + 80 < int(nam): raise Exception('Tuổi quá lớn')
     THANG = datetime.now().month
     NGAY = datetime.now().day
     if THANG > int(thang) or (THANG == int(thang) and NGAY >= int(ngay)):

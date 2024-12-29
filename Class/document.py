@@ -1,51 +1,59 @@
 from csv import reader
-from Others.style import clr, option, quest2
+from Others.style import clr, option, query2
 
 def Read():
     file = open('csv_file/ds_lop_hoc.csv', 'r', encoding = 'utf-8')
-    return list(reader(file))
+    data = list(reader(file))
+    data[0] = ['    Mã lớp    ','        Tên lớp       ',' Tổng số bàn ']
+    return data
 
-def Add(data):
+def Add(*data):
     file = open('csv_file/ds_lop_hoc.csv', 'a', encoding = 'utf-8')
-    if type(data[0]) is list:
-        for l in data:
-            file.write('\n' + ','.join(l))
-    else:
-        file.write('\n' + ','.join(data))
+    for l in data: file.write('\n' + ','.join(l))
     file.close()
 
 def Write(data):
     file = open('csv_file/ds_lop_hoc.csv', 'w', encoding = 'utf-8')
-    if type(data[0]) is list:
-        newData = '\n'.join([','.join(l) for l in data])
-        file.write(newData)
-    else:
-        raise Exception('data isn\'t list of list')
+    data[0] = ['Mã lớp','Tên lớp','Tổng số bàn']
+    newData = '\n'.join([','.join(data[i]) for i in range(3)])
+    file.write(newData)
     file.close()
 
-def ClassOptions(data: list, index: int, only: bool, alert: str, level: int, space = '      ', otherOptions = None):
-    dataBody = data[1:]
-    dsl = { str(i+1): dataBody[i][index] for i in range(0, len(dataBody)) }
-    ol = list(map(lambda k: space + option(k, dsl[k]), dsl))
+def GetOptions(data: list, index: int, only: bool, alert: str, level: int, space = '      ', otherOptions = None):
+    ds = list({ d[index] for d in data[1:] })
+    ds.sort()
+    cl = { str(i+1): ds[i] for i in range(0, len(ds)) }
+    ol = list(map(lambda k: space + option(k, cl[k]), cl))
     if otherOptions:
         for k in otherOptions:
             ol.append(space + option(k, otherOptions[k], 45))
     ol.append(space + option('ctrl + c', 'Thoát', 43))
-    for i in range(round(len(dsl) / 5 + .4)):
+    for i in range(round(len(cl) / 5 + .4)):
         print('\t'.join(ol[5*i:5*(i+1)]))
     while True:
         try:
-            maLop = quest2(alert, level)
-            if not maLop: raise Exception('Không có lớp nào được chọn')
-            elif otherOptions and maLop in otherOptions: return maLop
-            elif only and maLop in dsl: return dsl[maLop]
-            maLop = maLop.split(' ')
-            if only and len(maLop) > 1:
+            fl = query2(alert, level)
+            if not fl: raise Exception('Không có lớp nào được chọn')
+            elif otherOptions and fl in otherOptions: return fl
+            elif only and fl in cl: return cl[fl]
+            fl = fl.split(' ')
+            if only and len(fl) > 1:
                 raise Exception('Chỉ được chọn 1 lớp duy nhất')
             elif not only:
-                maLop = list(filter(lambda x: x in dsl, maLop))
-                if not len(maLop): raise Exception('Không có lớp nào được chọn')
-                return list(map(lambda x: dsl[x], maLop))
+                fl = list(filter(lambda x: x in cl, fl))
+                if not len(fl): raise Exception('Không có lớp nào được chọn')
+                return list(map(lambda x: cl[x], fl))
             else: raise Exception('Không có lớp nào được chọn')
         except Exception as e:
             print(clr(' ❌ Đầu vào không hợp lệ: ' + str(e) + '\nHãy thử lại!', 'fail'))
+
+def ClassIdFilter(data: list, index: int, ft: dict):
+    while True:
+        try:
+            ft['class'] = GetOptions(data, index, False, 'những lớp được hiển thị (Cách nhau bằng "dấu cách")', 2, '      ')
+            data = [data[0]] + list(filter(lambda d: d[index] in ft['class'], data[1:]))
+            ft['histoty'].append('    ✔️  Có Mã lớp là: ' + ', '.join(ft['class']))
+            break
+        except Exception as e:
+            print(clr(f' ✖  Lọc không thành công: {e}. Hãy chọn lại!', 'fail'))
+    return [data, ft]

@@ -1,7 +1,5 @@
-from Class.menu import clr, MenuAction as ClassMenu
-import Class.module as Class
-import Students.module as Students
-from Students.menu import MenuAction as StudentsMenu
+from Class.menu import clr, option, MenuAction as ClassMenu
+from Students.menu import cls, MenuAction as StudentsMenu
 from Points.menu import MenuAction as PointsMenu
 
 ACTION = {
@@ -10,48 +8,28 @@ ACTION = {
     'p-m': PointsMenu
 }
 
-def MainMenu(fn: list):
-    if not fn:
-        # n = input('1: ')
-        fn = ['c-m', None]
+def MenuAction():
+    M = ['c-m', 's-m', 'p-m']
+    try:
+        cls()
+        ct = ['Thông tin lớp học', 'Thông tin học sinh', 'Thông tin điểm học sinh']
+        print('\n    ' +
+            '    '.join(list(map(lambda i: option(str(i+1), ct[i]), range(3)))) +
+            '    ' + option('ctrl + c', 'Thoát', 43)
+        )
+        n = input('    Chọn chương trình quản lí: ')
+        return [M[int(n)-1], None]
+    except KeyboardInterrupt: return ['exit']
+
+def MainMenu(fn: list = None):
+    if not fn: fn = MenuAction()
     while fn[0] != 'exit':
+        if fn[0] == 'm-m':
+            fn = MenuAction()
+            continue
         fn = ACTION[fn[0]](fn[1])
     print('exit')
     print(clr(' ❌ Đã thoát chương trình\033[0m', 'fail'))
 
-# MainMenu(None)
-# Class.UpdateAction(None)
-# Students.AppendAction(['1111111122','Ngao','Ngo','17','2006-11-22','0101010101'])
-# MainMenu(['s-m', ['s-l', None]])
-Class.LookupAction(None)
-
-
-# print('\033[30;37m PP \033[0m\n QQ')
-# print('\033[7;41;31m K \033[0m\033[4;31;31m NAME\u2595\033[0m')
-
-
-'''print('⢷⡹⣳⡝⣮⢝⡫⢜⠫⠘⠌⠂⠁⠊⡑⠪⠱⢎⡵⢫⡞⣽⢻⣿⣾⣽⣻⣾⢿⣻⣙⢶⡹⢎⠳⠉⠓⠈⠁⠈⢉⠁⠋⢞⡹⢣⡟⣜⣫⢼\n' +
-'⢧⣛⡵⣚⠕⠊⠐⠀⠀⠀⠀⠀⢀⣁⢀⠀⢀⠀⡈⠡⠙⣜⢣⠻⡼⢿⢿⡹⢧⣳⡽⠂⢁⠀⡀⢀⢁⣁⠠⢀⠀⡀⠄⠀⠀⠃⠙⡞⣬⢳\n' +
-'⡻⡜⠶⠉⠀⠈⠁⠄⣠⣼⣶⣿⣿⡿⣿⣿⣿⣶⣦⣔⡂⠠⠌⠋⠵⣫⢎⠽⠋⠁⣀⢨⣴⣶⣿⢿⡿⣿⣿⣿⣶⣦⣤⡁⢀⠈⠀⠈⢱⢫\n' +
-'⡳⠍⠀⠀⠀⢈⣴⣿⣿⣟⣯⢷⣯⣿⣷⣟⣮⣿⣽⢿⣿⣷⣦⣁⠂⡀⠂⢠⣱⣶⣿⢿⣻⣽⣞⣿⣿⣷⣟⡾⣿⡽⣿⣿⣦⣀⠀⠁⠀⠑\n' +
-'⠓⠀⠄⠠⢡⣾⣿⢯⡷⣾⣽⡿⣟⢯⡻⣭⢻⣜⡻⢿⡾⣷⣟⣿⣿⣶⣽⣿⣿⣽⣾⢿⡻⡝⢯⡞⣵⢫⡟⣿⣷⣟⡷⣯⢿⣿⣦⠐⢀⠀\n' +
-'⠁⠈⠀⢰⣿⡿⣯⣟⣾⡿⣏⢷⡹⣎⠷⣭⢳⠮⣝⣣⢯⣝⡻⢿⣿⣯⣿⣿⠻⣝⢮⣓⠷⣹⠳⣞⡵⣫⢾⡱⢯⢿⣿⣽⡿⣽⣿⣆⠀⠀\n' +
-'⠀⠠⠀⣿⣿⣽⣳⣾⣟⡳⡝⣎⢷⣩⣛⡴⠫⠙⠌⠓⠺⠜⣭⢳⢮⣝⡳⢎⣿⣘⡧⠋⠞⠱⠛⠼⣧⣛⡼⡹⣏⠾⣹⣿⣟⣷⣻⣿⡄⠀\n' +
-'⠀⠀⠰⣿⣳⢯⣷⣿⢭⡳⣝⡺⡜⣶⠋⢁⠐⠈⢀⠐⡀⢈⠠⠙⠶⣮⣽⠛⠉⠁⡀⠐⠀⠀⠤⠀⠈⠹⣞⡵⢭⣫⢗⡽⣿⣞⣷⣻⡖⠀\n' +
-'⠀⠀⠱⣿⡽⣯⣿⡟⢮⡵⢣⣟⠼⠁⢀⠂⣤⣼⣾⣿⣿⣿⣶⣦⣄⡀⢠⣰⣾⣿⣿⣿⣿⣶⣆⡀⠆⠀⡙⢾⣣⠗⣯⢞⣿⣻⢶⣻⡕⠀\n' +
-'⠀⠀⢩⢿⡽⣞⣿⡝⣧⡝⣳⢞⠁⠀⠄⣼⣿⡿⣽⣞⣳⣟⣾⣽⣿⣿⣿⣿⣟⣾⣳⣟⡾⣽⣿⣷⡀⠂⠄⢚⡧⣻⡜⣯⢾⣯⣟⡷⡍⠀\n' +
-'⠀⢀⠂⣿⡽⣯⢿⣛⠶⣭⢳⣞⠀⠀⢐⣿⣿⣽⣳⣿⡟⣯⢻⡽⣻⣿⢿⡻⣏⢿⡹⣿⣿⣳⣯⣿⡧⠐⠀⢢⡝⣶⡹⣎⣿⣞⣷⣻⠄⠀\n' +
-'⣃⠀⠂⢸⣿⣯⣟⣯⢟⡶⡹⢾⡄⠀⠌⣿⣷⢯⣿⡷⣹⢎⠷⡩⢓⢮⠳⡝⣎⠷⣹⢳⣿⡷⣯⣿⡧⠃⠠⢱⡹⢶⡹⣞⣿⡽⣞⡧⠐⠀\n' +
-'⢧⡈⠄⡈⢿⣷⢯⣿⣯⢖⣯⢻⣧⠀⠈⣿⣿⢯⣿⣷⢫⢾⡁⢀⠈⠀⠁⠀⠌⣹⡱⣏⣿⣟⡷⣿⠏⡀⠡⢧⡛⣧⢻⣽⣿⣽⡻⠄⠁⠀\n' +
-'⡳⣥⠀⠠⠙⣿⣯⢿⣿⡞⣜⣣⢿⡆⢀⠸⣿⣟⣾⣯⡟⣾⣧⠀⠀⠀⡀⠌⣰⡷⣹⣽⡿⣽⣿⡿⠀⢄⣾⢧⢻⡼⣻⣿⢷⣯⠛⠀⠀⢴\n' +
-'⡝⡶⢣⠀⡁⠸⣿⣟⣾⣿⣧⢳⣎⡽⡄⠠⠹⣿⣾⡽⣿⣎⢿⣧⣀⠀⢄⣶⢿⣱⣿⣿⡽⣷⡿⢀⠀⣼⣏⢾⡯⣿⣿⣯⣿⡟⠀⢁⡘⢮\n' +
-'⣯⡝⣯⢳⡀⠀⠙⣿⣯⣿⣷⡯⣽⡞⣽⣆⠠⠘⢿⣿⡽⣿⣷⣻⢬⡻⣜⢮⣳⣿⣿⣳⣿⠏⠀⢄⣾⠟⣼⢻⣼⣿⢯⣿⠟⢀⠠⣠⢏⡷\n' +
-'⣷⡽⣎⢯⢷⣄⠀⠜⢻⣯⣿⢿⣧⣟⠶⣹⢷⡀⡈⠽⢿⣷⣯⢿⣷⣻⣼⣿⣿⣿⣿⠟⡁⢀⣴⡿⣭⢻⣼⣿⡿⣯⣿⠏⡐⠠⣐⡳⢮⣽\n' +
-'⣷⣻⣮⢏⡾⣹⣦⠀⠀⢻⣿⣟⡿⣯⣟⡱⣞⣻⣆⠀⢈⠻⢿⣿⣻⣿⣟⣿⣾⠟⠁⠀⣤⣿⢻⡜⣧⣿⡿⣯⣿⡿⠃⡀⢠⢳⡭⣝⣳⢾\n' +
-'⡷⣯⣟⣿⣞⡵⣫⢷⡀⠀⠉⣿⣿⡽⣿⣷⣣⢷⣹⢻⣦⡀⠈⠙⠻⣿⠿⠋⠁⠀⣼⠿⣝⠶⣫⣾⣿⡿⣽⣿⠛⠀⠀⣤⢛⡶⣹⢾⡽⣯\n' +
-'⣟⡷⣾⣽⣻⣷⣣⢏⡿⣆⡁⠀⠹⢿⣷⣻⣿⣮⣳⢏⡶⢻⣳⣄⠀⡀⠀⣀⡾⣝⣣⠟⣼⣳⣿⣟⣷⣿⠟⠡⢈⢠⡿⣴⢫⢾⣽⣫⢷⣯\n' +
-'⣯⣟⡾⣵⢯⣿⣿⣮⡽⣏⢷⣤⠐⠈⠻⢿⣾⣟⣿⣾⣵⢫⢶⡹⣟⢤⡳⣏⠿⡼⣥⣿⣷⢿⣽⣾⠟⠁⠂⣠⡶⡟⣧⢏⣿⡿⣶⢯⣟⡾\n' +
-'⡷⣯⡽⢯⣟⡾⣽⢿⣿⣯⢞⡭⢿⣄⠁⠈⠹⢿⣾⣳⢿⣿⣧⣻⢬⣳⢣⣭⢻⣵⣿⣟⣾⣿⠟⠁⠀⢂⣵⢿⡹⣝⣾⣿⢿⣽⣳⣟⡾⣽\n' +
-'⣟⣷⢻⣟⡾⣽⢯⣞⣯⢿⣿⣺⢵⣚⡷⣤⠁⠀⠙⠿⣿⣞⡿⣿⣧⣷⣫⣾⣿⣻⣷⡿⠛⠁⠀⣁⣼⢿⡹⣎⣷⣿⡿⣽⢯⣶⣻⢞⣽⣳\n' +
-'⠙⢾⣻⢾⣽⣳⣟⡾⣽⢯⣟⣿⣷⣏⢾⡹⣻⣄⡀⠀⠉⠿⣿⣷⣯⢷⣟⣷⣿⡟⠋⡐⠀⢢⣵⠿⣩⡞⣵⣿⣿⢯⣟⣭⣟⡾⣽⣛⣮⣟\n' +
-'⠀⠈⠹⣻⣶⣻⠾⣽⣏⡿⣮⢷⣻⢿⣷⣽⢲⡝⡷⢧⣀⠀⠀⠙⠿⣿⡿⢋⡁⠠⢁⣰⢾⢯⡝⣞⣳⣿⣿⣻⡽⡾⣽⠾⣭⣟⣷⡻⠞⠀\n')'''
+if __name__ == '__main__':
+    MainMenu()
