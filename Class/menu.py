@@ -26,7 +26,7 @@ def MenuAction(fn: list):
                 if len(n) == 1 and '0' < n < '6':
                     fn[0] = list(ACTION.keys())[int(n)-1]
                     break
-                else: print(clr('[x] Chỉ nhập số ứng với các chức năng trên. Hãy thử lại!', 'fail'))
+                else: print(clr(' \u2716  Chỉ nhập số ứng với các chức năng trên. Hãy thử lại!', 'fail'))
         except KeyboardInterrupt:
             return ['m-m']
     while fn[0] != 'c-m' and fn[0] in ACTION:

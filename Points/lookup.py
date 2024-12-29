@@ -1,7 +1,7 @@
 from Points.document import Read
 from Students.document import Read as ReadStudentDocs
 from Class.document import ClassIdFilter
-from Others.style import cls, clr, option, bold, header, query1, query2
+from Others.style import cls, clr, option, bold, header, query1, query2, tip
 from Others.sort import LimitSort
 # from Class.lookup import ClassIdFilter
 
@@ -35,8 +35,8 @@ def lookup(data: list, fields: list = SELECTED_FIELDS):
         index += 1
     return output
 
-def AlterColumn(*a):
-    raise Exception('Tính năng đang phát triển')
+def AlterColumn(data, n, ft):
+    return [data, ft]
 
 def PointsSort(data: list, limit: bool, ft: dict):
     dataHead = data[0]
@@ -52,9 +52,9 @@ def PointsSort(data: list, limit: bool, ft: dict):
         print('      ' + '\t'.join(ol[5*i:5*(i+1)]))
     sort = ''
     while True:
-        note = '  [!] Cú pháp: "<Tùy chọn> <Chiều: +(Tăng) hoặc -(Giảm)>"'
+        note = 'Cú pháp: "<Tùy chọn> <Chiều: +(Tăng) hoặc -(Giảm)>"'
         if limit: note += ' <Giới hạn: Số>'
-        print(clr(note, 'note'))
+        tip(note, 2)
         sort = query1(f'cú pháp sắp xếp (Mặc định: \033[35m{'1 + 10' if limit else '1 +'}\033[0m)', 2)
         if not sort:
             sort = ['1', '+', '10'] if limit else ['1', '+']
@@ -104,7 +104,7 @@ def LookupAction(data: list):
     ft = { 'class': [], 'histoty': [' 📝 Lịch sử bộ lọc:'] }
     # DATA.sort(key= lambda l: l[0])
     FUNCTION = {
-        '1': [AlterColumn, (None, 'Thay đổi cột dữ liệu')],
+        '1': [AlterColumn, (None, 'Cấu trúc lại bảng')],
         '2': [ClassIdFilter, (11, 'Lọc theo mã lớp')],
         '3': [PointsSort, (False, 'Sắp xếp tất cả')],
         '4': [PointsSort, (True, 'Sắp xếp giới hạn')]
@@ -149,13 +149,3 @@ def LookupAction(data: list):
             return EXIT
         except Exception as e:
             print(clr(' \u2716  Lọc không thành công: ' + str(e) + '\n    Hãy thử lại!', 'fail'))
-
-'''def lookupAcion():
-    l = Read()
-    index = 1
-    h = '\t' + ('\t').join(l[0][:7]) + '\t' + ('\t').join(l[0][7:])
-    print(header(h, 1))
-    nl = map(lambda x: x[:6] + [x[7]+'\t'] + x[7:9] + [x[9]], l[1:])
-    for fields in nl:
-        print(bold(index) + '\t ' + ('\t ').join(fields[:9]) + '\t  ' + fields[9])
-        index += 1'''

@@ -1,4 +1,4 @@
-from Class.document import Read, Add
+from Class.document import Read, Write
 from Others.style import clr, cls, bold, query1, option
 import Others.class_input_test as KiemTra
 
@@ -36,7 +36,9 @@ def AppendAction(maLop: str = None, then: list = None):
             output, tenLop = getInput(output, 'Tên lớp', 0, KiemTra.TenLop)
             output, tongSoBan = getInput(output, 'Tổng số bàn', '(Tối đa 40)', KiemTra.TongSoBan)
             
-            Add([maLop, tenLop.title(), tongSoBan])
+            data.append([maLop, tenLop.title(), tongSoBan])
+            data.sort(key=lambda d: d[0])
+            Write(data)
             dsml.append(maLop)
             if then: return then
             data += [[maLop, tenLop.title(), tongSoBan]]

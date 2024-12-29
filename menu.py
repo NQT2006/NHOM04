@@ -10,14 +10,17 @@ ACTION = {
 
 def MenuAction():
     M = ['c-m', 's-m', 'p-m']
+    CT = ['Thông tin lớp học', 'Thông tin học sinh', 'Thông tin điểm học sinh']
     try:
         cls()
-        ct = ['Thông tin lớp học', 'Thông tin học sinh', 'Thông tin điểm học sinh']
         print('\n    ' +
-            '    '.join(list(map(lambda i: option(str(i+1), ct[i]), range(3)))) +
+            '    '.join(list(map(lambda i: option(str(i+1), CT[i]), range(3)))) +
             '    ' + option('ctrl + c', 'Thoát', 43)
         )
-        n = input('    Chọn chương trình quản lí: ')
+        while True:
+            n = input('    Chọn chương trình quản lí: ').strip()
+            if len(n) == 1 and '0' < n < '4': break
+            print(clr(' \u2716  Đầu vào không hợp lệ: Chỉ chọn các lựa chọn đề xuất', 'fail'))
         return [M[int(n)-1], None]
     except KeyboardInterrupt: return ['exit']
 

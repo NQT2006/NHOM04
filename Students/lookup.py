@@ -1,6 +1,6 @@
 from Students.document import Read
 from Class.document import ClassIdFilter
-from Others.style import cls, clr, option, bold, header, query2, query1
+from Others.style import cls, clr, option, bold,header, query2, query1, tip
 from Others.sort import LimitSort
 # from Class.lookup import ClassIdFilter
 
@@ -42,9 +42,9 @@ def StudentsSort(data: list, limit: bool, ft: dict):
         print('      ' + '\t'.join(ol[5*i:5*(i+1)]))
     sort = ''
     while True:
-        note = '  [!] Cú pháp: "<Tùy chọn> <Chiều: +(Tăng) hoặc -(Giảm)>"'
+        note = 'Cú pháp: "<Tùy chọn> <Chiều: +(Tăng) hoặc -(Giảm)>"'
         if limit: note += ' <Giới hạn: Số>'
-        print(clr(note, 'note'))
+        tip(note, 1)
         sort = query1(f'cú pháp sắp xếp (Mặc định: \033[35m{'1 + 10' if limit else '1 +'}\033[0m)', 2)
         if not sort:
             sort = ['1', '+', '10'] if limit else ['1', '+']
@@ -63,8 +63,8 @@ def StudentsSort(data: list, limit: bool, ft: dict):
     else: ft['histoty'][-1] += ' (Tất cả)'
     return [data, ft]
 
-def AlterColumn(*a):
-    raise Exception('Tính năng đang phát triển')
+def AlterColumn(data, n, ft):
+    return [data, ft]
 
 def LookupAction(data: list):
     title = bold('[1] Tra cứu thông tin lớp')
@@ -79,7 +79,7 @@ def LookupAction(data: list):
     ft = { 'class': [], 'histoty': [' 📝 Lịch sử bộ lọc:'] }
     # DATA.sort(key= lambda l: l[0])
     FUNCTION = {
-        '1': [AlterColumn, (None, 'Tùy chỉnh cột dữ liệu')],
+        '1': [AlterColumn, (None, 'Cấu trúc lại bảng')],
         '2': [ClassIdFilter, (6, 'Lọc theo mã lớp')],
         '3': [StudentsSort, (False, 'Sắp xếp tất cả')],
         '4': [StudentsSort, (True, 'Sắp xếp giới hạn')]

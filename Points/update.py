@@ -1,5 +1,5 @@
 from Points.document import Read, Write
-from Points.lookup import FIELDS, joinData
+from Points.lookup import FIELDS
 from Others.style import clr, cls, header, option, query1, query2
 import Others.point_input_test as KiemTra
 
@@ -7,7 +7,7 @@ EXIT = ['p-m', None]
 
 SELECTED_FIELDS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
-def update(data, index, output0, Test ):
+def update(data, index, output0, Test):
     f = data[index]
     t = [f[0]]
     pos = 1
@@ -52,10 +52,11 @@ def update(data, index, output0, Test ):
     return data
 
 def UpdateAction(maHocSinh: list, then: list = None):
-    title = '\033[1m[3] Chỉnh sửa thông tin lớp\033[0m'
+    title = '\033[1m[3] Chỉnh sửa thông tin điểm học sinh\033[0m'
     cls(title)
     data = Read()
-    dsmhs = [l[0]+l[8]+l[7] for l in data]
+    dsdhs = [''] + [l[0]+l[8]+l[7] for l in data[1:]]
+    dsmhs = [''] + [h[:10] for h in dsdhs]
     Test = [KiemTra.MaHocSinh] + [KiemTra.MonHoc]*6 + [KiemTra.HocKi, KiemTra.NamHoc, KiemTra.MaHocKi]
     output0 = ''.join([
         '    ', option('Enter↵', 'Không thay đổi', 46), '\t',
@@ -67,6 +68,8 @@ def UpdateAction(maHocSinh: list, then: list = None):
             if not maHocSinh:
                 output = ''+title
                 maHocSinh = KiemTra.MaHocSinh(query1('mã học sinh cần sửa điểm', 1))
+                if maHocSinh not in dsmhs:
+                    raise Exception('Không tồn tại mã học sinh '+maHocSinh)
                 output += f'\n    Mã học sinh: \033[35m{maHocSinh}\033[0m'
                 cls(output)
                 nd = list(filter(lambda d: d[0] == maHocSinh, data))
@@ -84,37 +87,46 @@ def UpdateAction(maHocSinh: list, then: list = None):
                     print(clr(' \u2716  Đầu vào không hợp lệ: Chỉ chọn trong các tùy chọn đề xuất' +
                         '\n    Hãy thử lại', 'fail'))
                 while True:
-                    print('\n    ' + '    '.join([option('1', 'Học kì I'), option('2', 'Học kì II')]))
+                    o = []
+                    if maHocSinh+'1' in dsdhs: o.append(option('1', 'Học kì I'))
+                    if maHocSinh+'2' in dsdhs: o.append(option('2', 'Học kì II'))
+                    print('\n    ' + '    '.join(o))
                     hocKi = query2('học kì', 1)
-                    if hocKi in ['1', '2']:
-                        maHocSinh += hocKi
-                        break
-                    print(clr(' \u2716  Đầu vào không hợp lệ: Chỉ chọn trong các tùy chọn đề xuất' +
-                        '\n    Hãy thử lại', 'fail'))
+                    if maHocSinh+hocKi not in dsdhs:
+                        print(clr(' \u2716  Đầu vào không hợp lệ: Chỉ chọn trong các tùy chọn đề xuất' +
+                            '\n    Hãy thử lại', 'fail'))
+                    maHocSinh += hocKi
+                    break
                 maHocSinh = [maHocSinh]
             ii = 0
             while ii < len(maHocSinh):
-                index = dsmhs.index(maHocSinh[ii])
+                index = dsdhs.index(maHocSinh[ii])
                 o = (f'{title}: Học sinh mã \033[35m{maHocSinh[ii][:-5]}\033[0m -' +
                     f' Học kì \033[35m{'I' if maHocSinh[ii][-1] == '1' else 'II'}\033[0m -' +
                     f' Năm học\033[35m{maHocSinh[ii][-5:-1]}\033[0m\n\n{output0}')
                 newData = update(data.copy(), index, o, Test)
                 if newData == data:
-                    ext = input(' \033[2;37;39m⊞\033[0m  Bạn không chỉnh sửa gì. ' +
+                    ext = input(' 📣 Bạn không chỉnh sửa gì. ' +
                         'Muốn thoát chứ ? Chọn Enter↵(thoát) hoặc n(sửa lại): ')
                     if not ext:
                         print(clr(' \u2716  Cập nhật không thành công: Hủy chỉnh sửa', 'fail'))
                         ii += 1
                 else:
                     data = newData
-                    ext = input(' \033[2;37;39m⊞\033[0m  Bạn muốn lưu lại chỉnh sửa này chứ ?' +
+                    ext = input(' 📣 Bạn muốn lưu lại chỉnh sửa này chứ ?' +
                         ' Chọn Enter↵(lưu) hoặc n(sửa lại): ')
                     if not ext:
                         Write(data)
                         print(clr(' \u271a  Cập nhật thành công', 'success'))
                         ii += 1
+            if then: return then
             maHocSinh = None
         except KeyboardInterrupt:
+            if then: return then
             return EXIT
         except Exception as e:
             print(clr(f' \u2716  Cập nhật không thành công: {str(e)}\n    Hãy thử lại', 'fail'))
+            if then:
+                try: input(' 📣  \033[33mEnter để thoát\033[0m ')
+                except: None
+                return then

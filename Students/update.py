@@ -44,7 +44,6 @@ def update(data, index, output0, Test):
             catch = str(e)
             continue
     data[index] = t
-    print(t)
     print(output2+'\033[0m')
     return data
 
@@ -63,30 +62,34 @@ def UpdateAction(maHocSinh: list, then: list = None):
     while True:
         try:
             if not maHocSinh:
-                maHocSinh = KiemTra.MaHocSinh(query1('mã học sinh cần chỉnh sửa', 1))
-                maHocSinh = [maHocSinh]
+                maHocSinh = [KiemTra.MaHocSinh(query1('mã học sinh cần chỉnh sửa', 1))]
             ii = 0
             while ii < len(maHocSinh):
                 index = dsmhs.index(maHocSinh[ii])
                 o = f'{title}: \033[35m{maHocSinh[ii]}\033[0m\n{output0}'
                 newData = update(data.copy(), index, o, Test)
                 if newData == data:
-                    ext = input(' \033[2;37;39m⊞\033[0m  Bạn không chỉnh sửa gì. ' +
+                    ext = input(' 📣 Bạn không chỉnh sửa gì. ' +
                         'Muốn thoát chứ ? Chọn Enter↵(thoát) hoặc n(sửa lại): ')
                     if not ext:
                         print(clr(' \u2716  Cập nhật không thành công: Hủy chỉnh sửa', 'fail'))
                         ii += 1
                 else:
                     data = newData
-                    ext = input(' \033[2;37;39m⊞\033[0m  Bạn muốn lưu lại chỉnh sửa này chứ ?' +
+                    ext = input(' 📣 Bạn muốn lưu lại chỉnh sửa này chứ ?' +
                         ' Chọn Enter↵(lưu) hoặc n(sửa lại): ')
                     if not ext:
                         Write(data)
                         print(clr(' \u271a  Cập nhật thành công', 'success'))
                         ii += 1
+            if then: return then
             maHocSinh = None
         except KeyboardInterrupt:
             if then: return then
             return EXIT
         except Exception as e:
             print(clr(f' \u2716  Cập nhật không thành công: {str(e)}\n    Hãy thử lại', 'fail'))
+            if then:
+                try: input(' 📣 \033[33mEnter để thoát\033[0m ')
+                except: None
+                return then

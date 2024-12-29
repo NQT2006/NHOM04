@@ -7,15 +7,15 @@ def Read():
     data[0] = ['    Mã lớp    ','        Tên lớp       ',' Tổng số bàn ']
     return data
 
-def Add(*data):
-    file = open('csv_file/ds_lop_hoc.csv', 'a', encoding = 'utf-8')
-    for l in data: file.write('\n' + ','.join(l))
-    file.close()
-
 def Write(data):
     file = open('csv_file/ds_lop_hoc.csv', 'w', encoding = 'utf-8')
-    data[0] = ['Mã lớp','Tên lớp','Tổng số bàn']
-    newData = '\n'.join([','.join(data[i]) for i in range(3)])
+    header = [['Mã lớp','Tên lớp','Tổng số bàn']]
+    if data == 'clear': data = header
+    else:
+        body = data[1:]
+        body.sort(key=lambda d: d[0])
+        data = header + body
+    newData = '\n'.join([','.join(d) for d in data])
     file.write(newData)
     file.close()
 

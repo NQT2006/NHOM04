@@ -1,4 +1,4 @@
-from Students.document import Read, Add
+from Students.document import Read, Write
 from Class.document import GetOptions, Read as ReadClassDocs
 from Points.document import Add as AddPointDocs
 from Others.style import clr, cls, bold, query1
@@ -91,7 +91,9 @@ def AppendAction(form: list):
                     print(clr(' \u2716  Thêm không thành công: Lớp đã đạt sĩ số tối đa (40 học sinh)', 'fail'))
                 else: break
             form.append(maLop)
-            Add(form)
+            data.append(form)
+            data.sort(key=lambda d: d[0])
+            Write(data)
             AddPointDocs(
                 [form[0],'0','0','0','0','0','0','1',str(datetime.year),'18'],
                 [form[0],'0','0','0','0','0','0','2',str(datetime.year),'18']

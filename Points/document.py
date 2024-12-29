@@ -14,7 +14,12 @@ def Add(*data):
 
 def Write(data):
     file = open('csv_file/ds_diem.csv', 'w', encoding = 'utf-8')
-    data[0] = ['Mã học sinh','Toán','Lý','Hóa','Anh','Văn','Điểm trung bình','Học kì','Năm học','Mã học kì']
+    header = [['Mã học sinh','Toán','Lý','Hóa','Anh','Văn','Điểm trung bình','Học kì','Năm học','Mã học kì']]
+    if data == 'clear': data = header
+    else:
+        body = data[1:]
+        body.sort(key=lambda d: d[0])
+        data = header + body
     newData = '\n'.join([','.join(d) for d in data])
     file.write(newData)
     file.close()

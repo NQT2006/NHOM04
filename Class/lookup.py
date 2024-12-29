@@ -1,6 +1,6 @@
 from Class.document import Read, GetOptions
 from Students.document import Read as ReadStudentDocs
-from Others.style import cls, clr, bold, header, option, query2
+from Others.style import cls, clr, bold, header, option, query2, tip
 from Others.sort import LimitSort
 
 EXIT = ['c-m', None]
@@ -51,9 +51,9 @@ def ClassSort(data: list, limit: bool, ft: dict):
         print('\t'.join(ol[3*i:3*(i+1)]))
     sort = ''
     while True:
-        note = '[!] Cú pháp: "<Tùy chọn> <Chiều: +(Tăng) hoặc -(Giảm)>"'
+        note = 'Cú pháp: "<Tùy chọn> <Chiều: +(Tăng) hoặc -(Giảm)>"'
         if limit: note += ' <Giới hạn: Số>'
-        print(clr(note, 'note'))
+        tip(note, 1)
         sort = input(f'[?] Sắp xếp lớp theo trường (Mặc định: \033[35m{'1 + 10' if limit else '1 +'}\033[0m): ')
         if not sort:
             sort = ['1', '+', '10'] if limit else ['1', '+']
@@ -72,9 +72,6 @@ def ClassSort(data: list, limit: bool, ft: dict):
     else: ft['histoty'][-1] += ', Tất cả'
     return [data, ft]
 
-def AlterColumn(data, n, ft):
-    return [data, ft]
-
 def joinData(data: list):
     sdata = ReadStudentDocs()
     if len(data[0]) == 3:
@@ -83,7 +80,6 @@ def joinData(data: list):
             ss = len(list(filter(lambda d: d[6] == doc[0], sdata)))
             doc.append(str(ss))
     return data
-
 
 def LookupAction(data: list[list]):
     title = bold('[1] Tra cứu thông tin lớp')
@@ -94,17 +90,15 @@ def LookupAction(data: list[list]):
     data = DATA.copy()
     ft = {'class': [], 'histoty': [' 📝 Lịch sử bộ lọc:']}
     FUNCTION = {
-        '1': [AlterColumn, (None, 'Thay đổi cột dữ liệu')],
-        '2': [ClassIdFilter, (0, 'Lọc theo mã lớp')],
-        '3': [ClassSort, (False, 'Sắp xếp tất cả')],
-        '4': [ClassSort, (True, 'Sắp xếp giới hạn')]
+        '1': [ClassIdFilter, (0, 'Lọc theo mã lớp')],
+        '2': [ClassSort, (False, 'Sắp xếp tất cả')],
+        '3': [ClassSort, (True, 'Sắp xếp giới hạn')],
     }
     ol = [
         option('1', FUNCTION['1'][1][1]),
         option('2', FUNCTION['2'][1][1]) + '\t',
         option('3', FUNCTION['3'][1][1]),
-        option('4', FUNCTION['4'][1][1]),
-        option('5', 'Chuyển sang Tìm kiếm')
+        option('4', 'Chuyển sang Tìm kiếm')
     ]
     while True:
         if not output0:
@@ -135,3 +129,5 @@ def LookupAction(data: list[list]):
                 output1 = ''
                 continue
             return EXIT
+        except Exception as e:
+            print(clr(f' \u2716  Tra cứu không thành công: {e}\n', 'fail'))
