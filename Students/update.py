@@ -1,11 +1,12 @@
 from Students.document import Read, Write
 from Students.lookup import FIELDS, SELECTED_FIELDS
-from Others.style import clr, cls, header, option, query1, query2
+from Class.document import Read as ReadClassDocs
+from Others.style import clr, cls, header, option, query1
 import Others.student_input_test as KiemTra
 
 EXIT = ['s-m', None]
 
-def update(data, index, output0, Test):
+def update(data, index, output0, Test, dsml: list):
     f = data[index]
     t = [f[0]]
     pos = 1
@@ -24,6 +25,8 @@ def update(data, index, output0, Test):
                 t.append(f[pos])
             else:
                 value = Test[pos](value)
+                if pos == 6 and value not in dsml:
+                    raise Exception('Không tồn tại mã lớp ' + value)
                 t.append(value)
                 output2 += ('  ' if pos == 3 else '') + ' '*(FIELDS[pos][2] - len(value)) + value + '\t'
             if pos == 3:
@@ -51,7 +54,8 @@ def UpdateAction(maHocSinh: list, then: list = None):
     title = '\033[1m[3] Chỉnh sửa thông tin học sinh\033[0m'
     cls(title)
     data = Read()
-    dsmhs = [l[0] for l in data]
+    dsmhs = [d[0] for d in data]
+    dsml = [d[0] for d in ReadClassDocs()]
     Test = [KiemTra.MaHocSinh, KiemTra.HoDem, KiemTra.Ten, 
         KiemTra.NgaySinh, None, KiemTra.SoDienThoai, KiemTra.MaLop]
     output0 = ''.join([
@@ -63,11 +67,14 @@ def UpdateAction(maHocSinh: list, then: list = None):
         try:
             if not maHocSinh:
                 maHocSinh = [KiemTra.MaHocSinh(query1('mã học sinh cần chỉnh sửa', 1))]
+                if maHocSinh[0] not in dsmhs:
+                    maHocSinh = None
+                    raise Exception('Mã học sinh không tồn tại')
             ii = 0
             while ii < len(maHocSinh):
                 index = dsmhs.index(maHocSinh[ii])
                 o = f'{title}: \033[35m{maHocSinh[ii]}\033[0m\n{output0}'
-                newData = update(data.copy(), index, o, Test)
+                newData = update(data.copy(), index, o, Test, dsml)
                 if newData == data:
                     ext = input(' 📣 Bạn không chỉnh sửa gì. ' +
                         'Muốn thoát chứ ? Chọn Enter↵(thoát) hoặc n(sửa lại): ')

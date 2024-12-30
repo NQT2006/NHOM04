@@ -22,12 +22,11 @@ def AppendAction(maLop: str = None, then: list = None):
     data = Read()
     dsml = [l[0] for l in data]
     while True:
-        output = title + '\n' + option('ctrl + c', 'Trở về Menu', 43)
+        output = title + '\n    ' + option('ctrl + c','Thoát' if then else 'Trở về Menu', 43)
         try:
             if not maLop:
                 output, maLop = getInput(output, 'Mã lớp cần thêm', 0, KiemTra.MaLop)
                 if maLop == 'exit': return EXIT
-                else: maLop = maLop.upper()
                 if maLop in dsml:
                     maLop = ''
                     raise Exception(f'Mã lớp {maLop} đã tồn tại')
@@ -36,12 +35,12 @@ def AppendAction(maLop: str = None, then: list = None):
             output, tenLop = getInput(output, 'Tên lớp', 0, KiemTra.TenLop)
             output, tongSoBan = getInput(output, 'Tổng số bàn', '(Tối đa 40)', KiemTra.TongSoBan)
             
-            data.append([maLop, tenLop.title(), tongSoBan])
+            data.append([maLop, tenLop, tongSoBan])
             data.sort(key=lambda d: d[0])
             Write(data)
             dsml.append(maLop)
             if then: return then
-            data += [[maLop, tenLop.title(), tongSoBan]]
+            data += [[maLop, tenLop, tongSoBan]]
             print(clr(f'[+] Thêm lớp mã {maLop} hoàn tất!\n', 'success'))
             maLop = ''
         except KeyboardInterrupt:

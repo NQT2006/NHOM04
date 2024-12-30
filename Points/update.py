@@ -69,6 +69,7 @@ def UpdateAction(maHocSinh: list, then: list = None):
                 output = ''+title
                 maHocSinh = KiemTra.MaHocSinh(query1('mã học sinh cần sửa điểm', 1))
                 if maHocSinh not in dsmhs:
+                    maHocSinh = ''
                     raise Exception('Không tồn tại mã học sinh '+maHocSinh)
                 output += f'\n    Mã học sinh: \033[35m{maHocSinh}\033[0m'
                 cls(output)
@@ -127,6 +128,6 @@ def UpdateAction(maHocSinh: list, then: list = None):
         except Exception as e:
             print(clr(f' \u2716  Cập nhật không thành công: {str(e)}\n    Hãy thử lại', 'fail'))
             if then:
-                try: input(' 📣  \033[33mEnter để thoát\033[0m ')
+                try: input(' 📣 \033[33mEnter để thoát\033[0m ')
                 except: None
                 return then

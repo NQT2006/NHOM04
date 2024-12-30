@@ -14,6 +14,6 @@ def Write(data: list):
         body = data[1:]
         body.sort(key=lambda d: d[0])
         data = header + body
-    newData = '\n'.join([','.join(d) for d in data])
+    newData = '\n'.join([','.join(d[:7]) for d in data])
     file.write(newData)
     file.close()

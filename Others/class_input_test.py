@@ -11,15 +11,15 @@ def MaLop(x):
     if not x: raise Exception('Chưa nhập mã lớp')
     elif x.lower() in KEY: return x.lower()
     x = strip(x)
-    if len(x) == 10: return x
+    if len(x) == 10: return x.upper()
     else: raise Exception('Mã lớp không hợp lệ, phải có 10 kí tự')
 
 def TenLop(x):
     if not x: raise Exception('Chưa nhập tên lớp')
-    elif x in KEY: return x
+    elif x.lower() in KEY: return x.lower()
     x = strip(x)
     if len(x) < 10: raise Exception('Tên lớp không hợp lệ, ít hơn 10 kí tự')
-    elif len(x) <= 20: return x
+    elif len(x) <= 20: return x.title()
     else: raise Exception('Tên lớp không hợp lệ, vượt quá 20 kí tự')
 
 def TongSoBan(x):
