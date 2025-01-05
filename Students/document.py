@@ -7,7 +7,7 @@ def Read():
     return data
 
 def Write(data: list):
-    file = open('csv_file/ds_hoc_sinh.csv', 'w', encoding = 'utf-8')
+    file = open('./csv_file/ds_hoc_sinh.csv', 'w', encoding = 'utf-8')
     header = [['Mã học sinh','Họ đệm','Tên','Tuổi','Ngày sinh','Số điện thoại','Mã lớp']]
     if data == 'clear': data = header
     else:

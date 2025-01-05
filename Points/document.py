@@ -1,7 +1,7 @@
 from csv import reader
 
 def Read():
-    file = open('csv_file/ds_diem.csv', 'r', encoding = 'utf-8')
+    file = open('./csv_file/ds_diem.csv', 'r', encoding = 'utf-8')
     data = list(reader(file))
     data[0] = [' Mã học sinh ',' Toán ','  Lý  ','  Hóa  ','  Anh  ','  Văn  ',' Điểm TB ',' Học kì ', ' Năm học ',' Mã học kì ']
     return data

@@ -1,6 +1,6 @@
 from Class.document import Read, Write, GetOptions
-from Class.lookup import FIELDS, joinData
-from Others.style import clr, cls, header, option
+from Class.lookup import FIELDS
+from Others import *
 import Others.class_input_test as KiemTra
 
 EXIT = ['c-m', None]

@@ -1,8 +1,7 @@
 from Students.document import Read
 from Class.document import ClassIdFilter
-from Others.style import cls, clr, option, bold,header, query2, query1, tip
+from Others import *
 from Others.sort import LimitSort
-# from Class.lookup import ClassIdFilter
 
 EXIT = ['s-m', None]
 F5 = ['s-s', None]

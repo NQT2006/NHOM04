@@ -1,6 +1,6 @@
 from Points.document import Read
 from Points.lookup import lookup, FIELDS, EXIT, joinData
-from Others.style import clr, cls, bold, query1, query2, option, tip
+from Others import *
 from Others.search import ValueSearch
 
 

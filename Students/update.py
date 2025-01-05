@@ -1,7 +1,7 @@
 from Students.document import Read, Write
 from Students.lookup import FIELDS, SELECTED_FIELDS
 from Class.document import Read as ReadClassDocs
-from Others.style import clr, cls, header, option, query1
+from Others import *
 import Others.student_input_test as KiemTra
 
 EXIT = ['s-m', None]

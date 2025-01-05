@@ -1,0 +1,1 @@
+from Others.style import option, clr, cls, header, query1, query2, tip, bold

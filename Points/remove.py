@@ -1,7 +1,7 @@
 from Points.document import Read, Write
 from Students.document import Read as ReadStudentDocs, Write as WriteStudentDocs
 from Points.lookup import lookup, joinData
-from Others.style import clr, cls, bold, query1
+from Others import *
 import Others.student_input_test as KiemTra
 
 EXIT = ['p-m', None]

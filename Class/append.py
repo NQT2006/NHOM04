@@ -1,5 +1,5 @@
 from Class.document import Read, Write
-from Others.style import clr, cls, bold, query1, option
+from Others import *
 import Others.class_input_test as KiemTra
 
 EXIT = ['c-m', None]

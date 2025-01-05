@@ -1,7 +1,6 @@
 from Students.document import Read
 from Students.lookup import lookup, FIELDS
-from Students.remove import RemoveAction
-from Others.style import clr, cls, bold, query1, query2, option, tip
+from Others import *
 from Others.search import ValueSearch
 
 EXIT = ['s-m', None]

@@ -1,5 +1,5 @@
 import Class
-from Others.style import cls, clr, option
+from Others import *
 
 ACTION = {
     'c-l': Class.LookupAction,

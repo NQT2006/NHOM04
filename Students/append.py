@@ -1,8 +1,8 @@
 from Students.document import Read, Write
 from Class.document import GetOptions, Read as ReadClassDocs
 from Points.document import Add as AddPointDocs
-from Others.style import clr, cls, bold, query1
 import Others.student_input_test as KiemTra
+from Others import *
 from datetime import datetime
 
 MODE = {

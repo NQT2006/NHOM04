@@ -1,8 +1,8 @@
 from csv import reader
-from Others.style import clr, option, query2
+from Others import *
 
 def Read():
-    file = open('csv_file/ds_lop_hoc.csv', 'r', encoding = 'utf-8')
+    file = open('./csv_file/ds_lop_hoc.csv', 'r', encoding = 'utf-8')
     data = list(reader(file))
     data[0] = ['    Mã lớp    ','        Tên lớp       ',' Tổng số bàn ']
     return data

@@ -1,9 +1,8 @@
 from Points.document import Read
 from Students.document import Read as ReadStudentDocs
 from Class.document import ClassIdFilter
-from Others.style import cls, clr, option, bold, header, query1, query2, tip
+from Others import *
 from Others.sort import LimitSort
-# from Class.lookup import ClassIdFilter
 
 EXIT = ['p-m', None]
 F5 = ['p-s', None]

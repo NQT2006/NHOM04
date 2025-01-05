@@ -1,6 +1,6 @@
 from Class.document import Read, GetOptions
 from Students.document import Read as ReadStudentDocs
-from Others.style import cls, clr, bold, header, option, query2, tip
+from Others import *
 from Others.sort import LimitSort
 
 EXIT = ['c-m', None]

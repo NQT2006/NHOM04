@@ -1,5 +1,5 @@
 import Points
-from Others.style import cls, clr, option
+from Others import *
 
 ACTION = {
     'p-l': Points.LookupAction,

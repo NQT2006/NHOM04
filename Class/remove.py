@@ -1,6 +1,6 @@
 from Class.document import Read, Write, GetOptions
 from Students.document import Read as ReadStudents
-from Others.style import clr, cls, bold
+from Others import *
 
 EXIT = ['c-m', None]
 

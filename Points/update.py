@@ -1,6 +1,6 @@
 from Points.document import Read, Write
 from Points.lookup import FIELDS
-from Others.style import clr, cls, header, option, query1, query2
+from Others import *
 import Others.point_input_test as KiemTra
 
 EXIT = ['p-m', None]

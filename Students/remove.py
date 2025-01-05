@@ -1,6 +1,6 @@
 from Students.document import Read, Write
 from Points.document import Read as ReadPointDocs, Write as WritePointDocs
-from Others.style import clr, cls, bold, query1
+from Others import *
 import Others.student_input_test as KiemTra
 
 EXIT = ['s-m', None]

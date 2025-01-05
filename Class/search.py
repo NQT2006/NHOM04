@@ -1,8 +1,6 @@
 from Class.document import Read
 from Class.lookup import lookup, FIELDS, joinData
-from Class.update import UpdateAction
-from Class.remove import RemoveAction
-from Others.style import clr, cls, bold, query1, query2, option, tip
+from Others import *
 from Others.search import ValueSearch
 
 EXIT = ['c-m', None]
